@@ -7,6 +7,10 @@ const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plau');
     res.end('Hello World');
+
+    exports.myDateTime = function () {
+        return Date();
+    }
 });
 
 server.listen(port, hostname, () => {
