@@ -1,3 +1,8 @@
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const chalk = require('chalk');
+
 const http = require('http');
 
 const hostname = '127.0.0.1';
