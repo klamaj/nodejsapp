@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 const log = console.log;
+const bodyParser = require('body-parser');
 
 const blog = require('./routes/blog');
 
@@ -18,6 +19,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/?readPreference=primary&appname=Mong
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: true}));
 
 app.use(( req, res, next ) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
