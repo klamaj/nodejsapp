@@ -24,6 +24,16 @@ router.post('/custom/article/', (req, res, next) => {
     });
 });
 
+// Get 
+router.get('/articles/', (req, res, next) => {
+    Articles.find().then((response) => {
+        res.status(200).json({message: "Booom", article:response.data});
+    })
+    .catch( error => {
+        res.status(500).json({message: "WRONG", article:error})
+    });
+});
+
 // Def post
 router.post('/add/article/', (req, res, next) => {
     let a = new Articles({
