@@ -2,22 +2,30 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
+const log = console.log;
 
-const http = require('http');
+const blog = require('./routes/blog');
 
-const hostname = '127.0.0.1';
-const port = 3000;
+const app = express();
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plau');
-    res.end('Hello World');
+mongoose.connect("mongodb://127.0.0.1:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false")
+    .then(() => {
+        log(chalk.green("Connected to database!"));
+    })
+    .catch(() => {
+        log(chalk.red("Connection failed!"));
+    });
 
-    exports.myDateTime = function () {
-        return Date();
-    }
+app.use(express.json());
+app.use(express.urlencoded({ extended: false}));
+
+app.use(( req, res, next ) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With,Content-Type, Accept,Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    next();
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}`);
-});
+app.use("", blog);
+
+module.exports = app;
