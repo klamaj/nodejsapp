@@ -1,11 +1,10 @@
 require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const chalk = require('chalk');
-const log = console.log;
-const bodyParser = require('body-parser');
-
-const blog = require('./routes/blog');
+const express                   = require('express');
+const mongoose                  = require('mongoose');
+const chalk                     = require('chalk');
+const log                       = console.log;
+const bodyParser                = require('body-parser');
+const blog                      = require('./routes/blog');
 
 const app = express();
 
@@ -16,9 +15,10 @@ mongoose.connect("mongodb://127.0.0.1:27017/?readPreference=primary&appname=Mong
     .catch(() => {
         log(chalk.red("Connection failed!"));
     });
-
-app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
+app.use(express.json());
+
+
 app.use(bodyParser.urlencoded({ extended: true}));
 
 app.use(( req, res, next ) => {
