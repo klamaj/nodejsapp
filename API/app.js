@@ -1,10 +1,13 @@
 require('dotenv').config();
-const express                   = require('express');
-const mongoose                  = require('mongoose');
-const chalk                     = require('chalk');
-const log                       = console.log;
-const bodyParser                = require('body-parser');
-const blog                      = require('./routes/blog');
+const express = require('express');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const bodyParser = require('body-parser');
+const UserModel = require('./models/user');
+
+require('./auth/auth');
+const routes = require('./routes/blog');
+const secureRoute = require('./routes/secure-routes');
 
 const app = express();
 
@@ -19,15 +22,19 @@ app.use(express.urlencoded({ extended: false}));
 app.use(express.json());
 
 
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(( req, res, next ) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With,Content-Type, Accept,Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-    next();
+app.use('/', routes);
+
+// Plug in the JWT strategy as a middleware so only verified users can access this route.
+app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute);
+
+// Handle errors.
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({ error: err });
 });
 
-app.use("", blog);
-
-module.exports = app;
+app.listen(3000, () => {
+  console.log('Server started.')
+});
